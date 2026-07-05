@@ -1,0 +1,21 @@
+---
+description: Precheck before building anything that might already exist.
+alwaysApply: true
+---
+
+Before writing a new helper/util/module, adding a dependency, or implementing a
+general capability (rate limiting, retries, caching, file watching, parsing, etc.),
+check in this order and stop at the first that fits:
+
+1. Already in this codebase? Grep for it by name and concept → reuse it.
+2. Already an installed/declared dependency? Read pyproject.toml / requirements.txt
+   (and `pip list`) → use it.
+3. Python stdlib covers it? → use it, no dependency.
+4. A well-known package? Name likely ones from memory, then verify via a fetch:
+   - discover: `https://api.github.com/search/repositories?q=<terms>+language:<lang>&sort=stars&per_page=5`
+   - verify a named package is maintained: `https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg:pypi/<name>`
+     (both keyless; prefer a summarizing fetch or trim curl with jq). Recommend the
+     best maintained hit + its install command, citing stars / last release.
+5. Only if nothing fits, build the SMALLEST version — not a framework.
+
+Skip this for bespoke domain logic. Recommend reuse over rebuild; keep it brief.
