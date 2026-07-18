@@ -3,19 +3,24 @@ description: Precheck before building anything that might already exist.
 alwaysApply: true
 ---
 
-Before writing a new helper/util/module, adding a dependency, or implementing a
-general capability (rate limiting, retries, caching, file watching, parsing, etc.),
-check in this order and stop at the first that fits:
+Condensed from `SKILL.md` in this skill's folder — see there for the full procedure
+and reasoning; keep this in sync when that changes.
+
+Before writing a new helper/util/module, adding a dependency, or implementing any
+capability with a name you could search for on its own (rate limiting, retries,
+caching, file watching, parsing, etc. — not bespoke business logic tied to this
+app's schema/rules), check in this order and stop at the first that fits:
 
 1. Already in this codebase? Grep for it by name and concept → reuse it.
-2. Already an installed/declared dependency? Read pyproject.toml / requirements.txt
-   (and `pip list`) → use it.
-3. Python stdlib covers it? → use it, no dependency.
-4. A well-known package? Name likely ones from memory, then verify via a fetch:
+2. Already an installed/declared dependency? Read this language's manifest/lockfile
+   (`pyproject.toml`, `package.json`, `go.mod`, `Cargo.toml`…) and list installed
+   packages → use it.
+3. Language stdlib covers it? → use it, no dependency.
+4. A well-known package? Name likely candidates from memory. Confident one is
+   current and maintained? Recommend it directly. Unsure? Verify first:
    - discover: `https://api.github.com/search/repositories?q=<terms>+language:<lang>&sort=stars&per_page=5`
-   - verify a named package is maintained: `https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg:pypi/<name>`
-     (both keyless; prefer a summarizing fetch or trim curl with jq). Recommend the
-     best maintained hit + its install command, citing stars / last release.
+   - verify maintained: `https://packages.ecosyste.ms/api/v1/packages/lookup?purl=pkg:pypi/<name>`
+     (both keyless, GitHub rate-limits fast; prefer a summarizing fetch over raw curl)
 5. Only if nothing fits, build the SMALLEST version — not a framework.
 
 Skip this for bespoke domain logic. Recommend reuse over rebuild; keep it brief.
